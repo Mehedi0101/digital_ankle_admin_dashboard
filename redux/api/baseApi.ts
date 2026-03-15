@@ -42,10 +42,15 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
                     isRefreshing = false;
                     resolvePending.forEach((resolve) => resolve());
                     api.dispatch(logout());
+                    api.dispatch(baseApi.util.resetApiState());
                 }
             } catch {
+                const resolvePending = [...pendingRequests];
+                pendingRequests = [];
                 isRefreshing = false;
+                resolvePending.forEach((resolve) => resolve());
                 api.dispatch(logout());
+                api.dispatch(baseApi.util.resetApiState());
             }
         } else {
             await new Promise<void>((resolve) => { pendingRequests.push(resolve); });
@@ -58,6 +63,6 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const baseApi = createApi({
     reducerPath: "api",
     baseQuery: baseQueryWithReauth,
-    tagTypes: ["User", "Staff", "Package"],
+    tagTypes: ["User", "Staff", "Package", "Branch"],
     endpoints: () => ({}),
 });
