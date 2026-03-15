@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -11,11 +10,11 @@ import {
     Calendar,
     Settings,
     LogOut,
-    ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MenuItem } from "@/types/nav";
 
-const menuItems = [
+const menuItems: MenuItem[] = [
     { name: "Overview", icon: LayoutDashboard, href: "/" },
     { name: "Staff Management", icon: Users, href: "/staff" },
     { name: "Packages", icon: Package, href: "/packages" },
