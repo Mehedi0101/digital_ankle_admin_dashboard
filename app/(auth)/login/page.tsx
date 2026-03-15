@@ -7,6 +7,7 @@ import { useAppDispatch } from "@/store/hooks";
 import { setUser } from "@/store/slices/authSlice";
 import { toast } from "sonner";
 import { Lock, Mail, Loader2, Eye, EyeOff, Stethoscope } from "lucide-react";
+import GuestGuard from "@/components/auth/GuestGuard";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -33,82 +34,87 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4">
-            <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-100 p-8">
-                {/* Logo */}
-                <div className="flex flex-col items-center mb-8">
-                    <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-blue-200">
-                        <Stethoscope className="text-white w-7 h-7" />
+        <GuestGuard>
+            <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-4">
+                <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-100 p-8">
+                    {/* Logo */}
+                    <div className="flex flex-col items-center mb-8">
+                        <img
+                            src="/logo3.png"
+                            alt="Digital Ankle Logo"
+                            className="w-32 h-auto object-contain mb-2"
+                        />
+                        <div className="px-3 py-1 bg-slate-50 border border-slate-100 rounded-full">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em]">Admin Portal</span>
+                        </div>
                     </div>
-                    <h1 className="text-2xl font-bold text-slate-900">Admin Dashboard</h1>
-                    <p className="text-slate-500 mt-1">Please sign in to your account</p>
+
+                    <form onSubmit={handleLogin} className="space-y-5">
+                        {/* Email */}
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <Mail className="h-5 w-5 text-slate-400" />
+                                </div>
+                                <input
+                                    type="email"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-slate-900"
+                                    placeholder="admin@digitalankle.com"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Password */}
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <Lock className="h-5 w-5 text-slate-400" />
+                                </div>
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="block w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-slate-900"
+                                    placeholder="••••••••"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                >
+                                    {showPassword ? <EyeOff className="h-5 w-5 text-slate-400 hover:text-slate-600" /> : <Eye className="h-5 w-5 text-slate-400 hover:text-slate-600" />}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Login Button */}
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full flex items-center justify-center py-3 px-4 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 disabled:opacity-70 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-500/20"
+                        >
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5" />
+                                    Signing in...
+                                </>
+                            ) : (
+                                "Sign In"
+                            )}
+                        </button>
+                    </form>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-5">
-                    {/* Email */}
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Mail className="h-5 w-5 text-slate-400" />
-                            </div>
-                            <input
-                                type="email"
-                                required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-slate-900"
-                                placeholder="admin@prohealth.com"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Password */}
-                    <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Lock className="h-5 w-5 text-slate-400" />
-                            </div>
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="block w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-slate-900"
-                                placeholder="••••••••"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                            >
-                                {showPassword ? <EyeOff className="h-5 w-5 text-slate-400 hover:text-slate-600" /> : <Eye className="h-5 w-5 text-slate-400 hover:text-slate-600" />}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Login Button */}
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="w-full flex items-center justify-center py-3 px-4 rounded-lg text-white font-semibold bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/20 disabled:opacity-70 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-500/20"
-                    >
-                        {isLoading ? (
-                            <>
-                                <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5" />
-                                Signing in...
-                            </>
-                        ) : (
-                            "Sign In"
-                        )}
-                    </button>
-                </form>
+                <p className="mt-8 text-slate-400 text-sm">
+                    © 2026 Digital Ankle. All rights reserved.
+                </p>
             </div>
-
-            <p className="mt-8 text-slate-400 text-sm">
-                © 2026 ProHealth Medical Center. All rights reserved.
-            </p>
-        </div>
+        </GuestGuard>
     );
 }

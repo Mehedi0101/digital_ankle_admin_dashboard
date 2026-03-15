@@ -2,110 +2,67 @@
 
 import React from "react";
 import { useAppSelector } from "@/store/hooks";
-import {
-    Users,
-    Calendar,
-    Package,
-    TrendingUp,
-    Clock,
-    CheckCircle2,
-    AlertCircle
+import { 
+  Wand2, 
+  ArrowRight, 
+  Users, 
+  Building2, 
+  Stethoscope, 
+  BriefcaseMedical 
 } from "lucide-react";
+import Link from "next/link";
 
-export default function DashboardOverview() {
+export default function WelcomePage() {
     const user = useAppSelector((state) => state.auth.user);
 
-    const stats = [
-        { name: "Total Staff", value: "24", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
-        { name: "Appointments", value: "142", icon: Calendar, color: "text-purple-600", bg: "bg-purple-50" },
-        { name: "Active Packages", value: "12", icon: Package, color: "text-emerald-600", bg: "bg-emerald-50" },
-        { name: "Revenue", value: "$12,450", icon: TrendingUp, color: "text-orange-600", bg: "bg-orange-50" },
-    ];
-
-    const recentActivity = [
-        { id: 1, type: "appointment", message: "New appointment scheduled by John Doe", time: "2 mins ago", status: "success" },
-        { id: 2, type: "staff", message: "Dr. Sarah Smith updated her profile", time: "15 mins ago", status: "info" },
-        { id: 3, type: "package", message: "Premium Care package purchased", time: "1 hour ago", status: "success" },
-        { id: 4, type: "system", message: "Database backup completed successfully", time: "3 hours ago", status: "warning" },
+    const quickLinks = [
+        { name: "Manage Staff", href: "/staff", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
+        { name: "View Branches", href: "/branches", icon: Building2, color: "text-purple-600", bg: "bg-purple-50" },
+        { name: "Define Services", href: "/services", icon: Stethoscope, color: "text-emerald-600", bg: "bg-emerald-50" },
+        { name: "Service Packages", href: "/packages", icon: BriefcaseMedical, color: "text-orange-600", bg: "bg-orange-50" },
     ];
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
-            {/* Header */}
-            <div>
-                <h1 className="text-2xl font-bold text-slate-900">Welcome back, {user?.name || "Admin"}</h1>
-                <p className="text-slate-500">Here's what's happening at your medical center today.</p>
+        <div className="flex flex-col items-center justify-center min-h-[80vh] text-center animate-in fade-in zoom-in slide-in-from-bottom-8 duration-1000 ease-out">
+            {/* Elegant Icon Container */}
+            <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mb-8 shadow-2xl shadow-blue-200 group/wand transition-all duration-500 hover:rotate-3 hover:scale-110">
+                <Wand2 className="text-white w-10 h-10 group-hover/wand:scale-110 transition-transform duration-500" />
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {stats.map((stat) => (
-                    <div key={stat.name} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-                        <div className={`p-3 rounded-xl ${stat.bg}`}>
-                            <stat.icon className={`w-6 h-6 ${stat.color}`} />
+            {/* Welcome Text */}
+            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
+                Welcome back, <span className="text-blue-600">{user?.name || "Admin"}</span>!
+            </h1>
+            <p className="text-lg text-slate-500 max-w-lg mx-auto mb-12">
+                Your medical center's administrative hub is ready. Use the sidebar to manage your staff, branches, and healthcare services.
+            </p>
+
+            {/* Quick Access Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl px-4">
+                {quickLinks.map((link) => (
+                    <Link 
+                        key={link.name} 
+                        href={link.href}
+                        className="group bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col items-center gap-4"
+                    >
+                        <div className={`p-4 rounded-xl ${link.bg} group-hover:scale-110 transition-transform`}>
+                            <link.icon className={`w-8 h-8 ${link.color}`} />
                         </div>
-                        <div>
-                            <p className="text-sm font-medium text-slate-500">{stat.name}</p>
-                            <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
+                        <div className="flex flex-col items-center">
+                            <span className="font-bold text-slate-900">{link.name}</span>
+                            <div className="flex items-center gap-1 text-xs text-blue-600 mt-2 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                                Get Started <ArrowRight className="w-3 h-3" />
+                            </div>
                         </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Recent Activity */}
-                <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-lg font-semibold text-slate-900">Recent Activity</h2>
-                        <button className="text-sm font-medium text-blue-600 hover:text-blue-700">View all</button>
-                    </div>
-                    <div className="space-y-6">
-                        {recentActivity.map((activity) => (
-                            <div key={activity.id} className="flex gap-4">
-                                <div className="relative">
-                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${activity.status === "success" ? "bg-emerald-50 text-emerald-600" :
-                                            activity.status === "info" ? "bg-blue-50 text-blue-600" : "bg-orange-50 text-orange-600"
-                                        }`}>
-                                        {activity.status === "success" ? <CheckCircle2 className="w-5 h-5" /> :
-                                            activity.status === "info" ? <Clock className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
-                                    </div>
-                                    {activity.id !== recentActivity.length && (
-                                        <div className="absolute top-10 left-1/2 w-0.5 h-6 bg-slate-100 -translate-x-1/2" />
-                                    )}
-                                </div>
-                                <div className="flex-1">
-                                    <p className="text-sm font-medium text-slate-900">{activity.message}</p>
-                                    <p className="text-xs text-slate-400 mt-1">{activity.time}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Quick Actions */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-fit">
-                    <h2 className="text-lg font-semibold text-slate-900 mb-6">Quick Actions</h2>
-                    <div className="space-y-3">
-                        <button className="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors flex items-center gap-3 group">
-                            <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center group-hover:border-blue-400 transition-colors">
-                                <Users className="w-5 h-5 text-slate-600 group-hover:text-blue-600" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-semibold text-slate-900">Add New Staff</p>
-                                <p className="text-xs text-slate-500">Register a new doctor or nurse</p>
-                            </div>
-                        </button>
-                        <button className="w-full text-left px-4 py-3 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors flex items-center gap-3 group">
-                            <div className="w-10 h-10 rounded-lg bg-white border border-slate-200 flex items-center justify-center group-hover:border-purple-400 transition-colors">
-                                <Calendar className="w-5 h-5 text-slate-600 group-hover:text-purple-600" />
-                            </div>
-                            <div>
-                                <p className="text-sm font-semibold text-slate-900">New Appointment</p>
-                                <p className="text-xs text-slate-500">Schedule a patient visit</p>
-                            </div>
-                        </button>
-                    </div>
-                </div>
+            {/* Footer Note */}
+            <div className="mt-16 pt-8 border-t border-slate-100 w-full max-w-xs">
+                <p className="text-xs text-slate-400 font-medium uppercase tracking-widest">
+                    Digital Ankle Systems v1.0.0
+                </p>
             </div>
         </div>
     );

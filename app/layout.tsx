@@ -6,8 +6,8 @@ import { Providers } from "@/components/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ProHealth Admin Dashboard",
-  description: "Manage your medical center with ease.",
+  title: "Digital Ankle Admin Dashboard",
+  description: "Advanced administrative hub for your medical center.",
 };
 
 export default function RootLayout({
