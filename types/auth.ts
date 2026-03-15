@@ -6,6 +6,12 @@ export interface IUser {
     branch_id?: string;
 }
 
+export interface ILoginInput {
+    email: string;
+    password: string;
+    role?: string;
+}
+
 export interface AuthState {
     user: IUser | null;
 }
