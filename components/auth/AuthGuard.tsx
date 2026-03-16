@@ -1,43 +1,32 @@
 "use client";
 
-import { useGetMeQuery } from "@/redux/api/userApi";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setUser } from "@/store/slices/authSlice";
+import { useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
-    const { data, isLoading, isError, isSuccess } = useGetMeQuery();
-    const user = useAppSelector((state) => state.auth.user);
-    const dispatch = useAppDispatch();
+    const { user, isInitialized } = useAppSelector((state) => state.auth);
     const router = useRouter();
 
     useEffect(() => {
-        if (data?.success) {
-            dispatch(setUser(data.data));
-        }
-    }, [data, dispatch]);
-
-    useEffect(() => {
-        // If we are definitely not logged in, boot to login
-        if (!isLoading && isError) {
+        // Only redirect after initialization is complete — prevents premature redirect
+        if (isInitialized && !user) {
             router.replace("/login");
         }
-    }, [isLoading, isError, router]);
+    }, [isInitialized, user, router]);
 
-    // 1. Initial Loading (No user in brain yet)
-    if (isLoading && !user) {
+    // 1. Not initialized yet — session check in progress
+    if (!isInitialized) {
         return <AuthLoadingScreen message="Checking session..." />;
     }
 
-    // 2. Not authorized/Error: Show nothing (or a separate redirected state)
-    // This prevents the "split second" leak of the dashboard
-    if (isError || (!isLoading && !user && !data?.success)) {
+    // 2. Initialized but no user — redirect in progress, show blank screen to prevent dashboard flash
+    if (!user) {
         return <AuthLoadingScreen message="Redirecting to login..." />;
     }
 
-    // 3. Authorized (Success)
+    // 3. Authorized
     return <>{children}</>;
 }
 
@@ -51,3 +40,4 @@ function AuthLoadingScreen({ message }: { message: string }) {
         </div>
     );
 }
+

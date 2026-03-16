@@ -42,7 +42,8 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
                     isRefreshing = false;
                     resolvePending.forEach((resolve) => resolve());
                     api.dispatch(logout());
-                    api.dispatch(baseApi.util.resetApiState());
+                    // NOTE: Do NOT call resetApiState() here — doing so clears the cache
+                    // and causes useGetMeQuery to re-fire, creating an infinite 401 loop.
                 }
             } catch {
                 const resolvePending = [...pendingRequests];
@@ -50,7 +51,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
                 isRefreshing = false;
                 resolvePending.forEach((resolve) => resolve());
                 api.dispatch(logout());
-                api.dispatch(baseApi.util.resetApiState());
+                // NOTE: Do NOT call resetApiState() here.
             }
         } else {
             await new Promise<void>((resolve) => { pendingRequests.push(resolve); });

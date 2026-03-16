@@ -3,10 +3,12 @@ import { IUser } from "@/types/auth";
 
 interface AuthState {
     user: IUser | null;
+    isInitialized: boolean; // true once the initial session check is complete
 }
 
 const initialState: AuthState = {
     user: null,
+    isInitialized: false,
 };
 
 const authSlice = createSlice({
@@ -16,11 +18,15 @@ const authSlice = createSlice({
         setUser: (state, action: PayloadAction<IUser | null>) => {
             state.user = action.payload;
         },
+        setInitialized: (state) => {
+            state.isInitialized = true;
+        },
         logout: (state) => {
             state.user = null;
+            state.isInitialized = true; // Ensure routes can redirect after logout
         },
     },
 });
 
-export const { setUser, logout } = authSlice.actions;
+export const { setUser, setInitialized, logout } = authSlice.actions;
 export default authSlice.reducer;

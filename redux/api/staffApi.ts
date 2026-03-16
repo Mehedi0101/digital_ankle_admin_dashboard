@@ -6,11 +6,14 @@ export const staffApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
 
         addStaff: builder.mutation<{ success: boolean; message: string }, any>({
-            query: (newStaff) => ({
-                url: "/staffs/create-staff", // Adjust based on your backend route
-                method: "POST",
-                body: newStaff,
-            }),
+            query: (data) => {
+                const { branchId, ...rest } = data;
+                return {
+                    url: "/auth/register/staff",
+                    method: "POST",
+                    body: { ...rest, branch_id: branchId },
+                };
+            },
             invalidatesTags: ["Staff"],
         }),
 

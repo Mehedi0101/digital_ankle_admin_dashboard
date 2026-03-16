@@ -24,7 +24,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLogoutMutation } from "@/redux/api/authApi";
-import { baseApi } from "@/redux/api/baseApi";
 import { useAppDispatch } from "@/store/hooks";
 import { logout } from "@/store/slices/authSlice";
 import { toast } from "sonner";
@@ -92,7 +91,8 @@ export default function Sidebar() {
             console.error("Logout API failed", error);
         } finally {
             dispatch(logout());
-            dispatch(baseApi.util.resetApiState()); // Very important: clears RTK Query cache
+            // NOTE: Do NOT call resetApiState() — doing so clears the cache and
+            // causes useGetMeQuery to re-fire in AuthGuard, creating an infinite 401 loop.
             toast.success("Logged out successfully");
             router.replace("/login");
         }
